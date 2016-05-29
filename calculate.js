@@ -40,6 +40,64 @@ function getGrade(grade) {
 	}
 }
 
+function addAssignment() {
+	var section = categoryChooser.value
+
+	var rowIndecies = []
+	for(var i=0; i<tBody.length; i++) {
+		if(tBody[i].tagName == "TR") {
+			rowIndecies.push(i);
+		}
+	}
+
+	tCells = tBody[rowIndecies[section]].childNodes;
+	
+	tCells[5].innerHTML = parseInt(tCells[5].innerHTML) + 1;
+	tCells[7].innerHTML = parseInt(tCells[7].innerHTML) + parseInt(possibleTextField.value);
+	tCells[9].innerHTML = parseInt(tCells[9].innerHTML) + parseInt(earnedTextField.value);
+
+	tCells[11].innerHTML = getGrade(parseInt(tCells[9].innerHTML)/parseInt(tCells[7].innerHTML));
+
+	possibleTextField.value = "0";
+	earnedTextField.value = "0";
+
+	calculate();
+}
+
+function calculate() {
+	categories = [];
+	earned = 0; 
+	possible = 0;
+	for(var i=0; i<rowIndecies.length; i++) {
+		tCells = tBody[rowIndecies[i]].childNodes;
+		
+		var cat = {}
+
+		for(var l=0; l<tCells.length; l++) {
+			if(l == 1) {
+				cat["section"] = tCells[l].innerHTML;
+			} else if(l == 3) {
+				cat["weight"] = tCells[l].innerHTML;
+			} else if(l == 5) {
+				cat["assignments"] = tCells[l].innerHTML;
+			} else if(l == 7) {
+				cat["possible"] = tCells[l].innerHTML;
+			} else if(l == 9) {
+				cat["earned"] = tCells[l].innerHTML;
+			} else if(l == 11) {
+				cat["grade"] = tCells[l].innerHTML;
+			}
+		}
+		categories.push(cat);
+	}
+
+	for(var i=0; i<categories.length; i++) {
+		earned += parseInt(categories[i]["earned"]);
+		possible += parseInt(categories[i]["possible"]);
+	}
+	currentGrade = earned/possible;
+}
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -81,40 +139,12 @@ for(var i=0; i<tBody.length; i++) {
 	}
 }
 
-//set array of objects which contain information about each section of grading
 var categories = [];
-for(var i=0; i<rowIndecies.length; i++) {
-	tCells = tBody[rowIndecies[i]].childNodes;
-	
-	var cat = {}
-
-	for(var l=0; l<tCells.length; l++) {
-		if(l == 1) {
-			cat["section"] = tCells[l].innerHTML;
-		} else if(l == 3) {
-			cat["weight"] = tCells[l].innerHTML;
-		} else if(l == 5) {
-			cat["assignments"] = tCells[l].innerHTML;
-		} else if(l == 7) {
-			cat["possible"] = tCells[l].innerHTML;
-		} else if(l == 9) {
-			cat["earned"] = tCells[l].innerHTML;
-		} else if(l == 11) {
-			cat["grade"] = tCells[l].innerHTML;
-		}
-	}
-	categories.push(cat);
-}
-
-//add up earned and possible points
 var earned = 0;
 var possible = 0;
+var currentGrade = 0;
 
-for(var i=0; i<categories.length; i++) {
-	earned += parseInt(categories[i]["earned"]);
-	possible += parseInt(categories[i]["possible"]);
-}
-var currentGrade = earned/possible;
+calculate();
 
 //insert new row category
 
@@ -136,12 +166,14 @@ var numCell = row.insertCell(2);
 var possibleCell = row.insertCell(3);
 var earnedCell = row.insertCell(4);
 var gradeCell = row.insertCell(5);
+var addCell = row.insertCell(6);
 
 weightCell.innerHTML = categories[0]["weight"];
 numCell.innerHTML = "1";
 possibleCell.innerHTML = '<input type="text" id="possible">';
 earnedCell.innerHTML = '<input type="text" id="earned">';
 gradeCell.innerHTML = "";
+addCell.innerHTML = '<button id="add" onclick="addAssignment()">+</button>';
 
 var categoryChooser = document.getElementById("category");
 var possibleTextField = document.getElementById("possible");
@@ -173,30 +205,35 @@ categoryChooser.onchange = function() {
 	weightCell.innerHTML = categories[categoryChooser.value]["weight"];
 }
 
+//checks to see which fields are blank so not dividing by zero
+
 possibleTextField.onchange = function() {
 	var str = possibleTextField.value;
+	var str2 = earnedTextField.value;
 
-    if(!str.match(/\S/){
-    	earnedTextField.innerHTML = 0;
-
-    } else {
-		totalPossibleCell.innerHTML = possible + parseInt(possibleTextField.value);
-		totalGradeCell.innerHTML = getGrade((earned + parseInt(earnedTextField.value)) / (possible + parseInt(possibleTextField.value)));
-		gradeCell.innerHTML = getGrade(parseInt(earnedTextField.value) / parseInt(possibleTextField.value));
+    if(!str.match(/\S/)) {
+		possibleTextField.value = "0";
     }
-
+    if(!str.match(/\S/) && !str2.match(/\S/)) {
+		gradeCell.innerHTML = "";
+    }
+	totalPossibleCell.innerHTML = possible + parseInt(possibleTextField.value);
+	totalGradeCell.innerHTML = getGrade((earned + parseInt(earnedTextField.value)) / (possible + parseInt(possibleTextField.value)));
+	gradeCell.innerHTML = getGrade(parseInt(earnedTextField.value) / parseInt(possibleTextField.value));
 }
 
 earnedTextField.onchange = function() {
 	var str = earnedTextField.value;
+	var str2 = possibleTextField.value;
 
-    if(!str.match(/\S/){
-    	earnedTextField.innerHTML = 0;
+    if(!str.match(/\S/)) {
+    	earnedTextField.value = "0";
+    }
+    if(!str.match(/\S/) && !str2.match(/\S/)) {
+		gradeCell.innerHTML = "";
     }
 	totalEarnedCell.innerHTML = earned + parseInt(earnedTextField.value);
 	totalGradeCell.innerHTML = getGrade((earned + parseInt(earnedTextField.value)) / (possible + parseInt(possibleTextField.value)));
 	gradeCell.innerHTML = getGrade(parseInt(earnedTextField.value) / parseInt(possibleTextField.value));
-
-
-}	
+}
 
