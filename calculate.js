@@ -52,9 +52,17 @@ function addAssignment() {
 
 	tCells = tBody[rowIndecies[section]].childNodes;
 	
-	tCells[5].innerHTML = parseInt(tCells[5].innerHTML) + 1;
-	tCells[7].innerHTML = parseInt(tCells[7].innerHTML) + parseInt(possibleTextField.value);
-	tCells[9].innerHTML = parseInt(tCells[9].innerHTML) + parseInt(earnedTextField.value);
+	if(possibleTextField.value.match(/\S/) && earnedTextField.value.match(/\S/)) {
+		tCells[5].innerHTML = parseInt(tCells[5].innerHTML) + 1;
+	}
+
+	if(possibleTextField.value.match(/\S/)) {
+        tCells[7].innerHTML = parseInt(tCells[7].innerHTML) + parseInt(possibleTextField.value);
+    }
+
+    if(earnedTextField.value.match(/\S/)) {
+        tCells[9].innerHTML = parseInt(tCells[9].innerHTML) + parseInt(earnedTextField.value);
+    }
 
 	tCells[11].innerHTML = getGrade(parseInt(tCells[9].innerHTML)/parseInt(tCells[7].innerHTML));
 
@@ -236,4 +244,3 @@ earnedTextField.onchange = function() {
 	totalGradeCell.innerHTML = getGrade((earned + parseInt(earnedTextField.value)) / (possible + parseInt(possibleTextField.value)));
 	gradeCell.innerHTML = getGrade(parseInt(earnedTextField.value) / parseInt(possibleTextField.value));
 }
-
