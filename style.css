@@ -1,0 +1,20 @@
+<style>
+
+input.addButton {
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  font-size: 100%;
+  background: green;
+  color: white;
+  cursor: pointer;
+  border: 1px solid green;
+}
+
+input.addButton:hover {
+  color: green;
+  background: white;
+  border: 1px solid green;
+}
+
+</style>

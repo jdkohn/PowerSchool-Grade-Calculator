@@ -1,13 +1,12 @@
 {
   "manifest_version": 2,
   "name": "PowerSchool Grade Calculator",
-  "version": "0.1"
+  "version": "0.1",
   "content_scripts": [
     {
-      "matches": [
-        "https://ps.seattleschools.org/*"
-      ],
-      "js": ["calculate.js"]
+      "matches": ["https://ps.seattleschools.org/*"],
+      "js": ["calculate.js"],
+      "css": ["style.css"]
     }
   ]
 }

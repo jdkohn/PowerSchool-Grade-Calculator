@@ -11,6 +11,8 @@ Created by Jacob Kohn, 2016
 
 function getGrade(grade) {
 	
+	console.log("GET GRADE");
+
 	var intGrade = grade;
 
 	if(intGrade >= .93) {
@@ -41,6 +43,9 @@ function getGrade(grade) {
 }
 
 function addAssignment() {
+
+	console.log("ADD ASSIGNMENT");
+
 	var section = categoryChooser.value
 
 	var rowIndecies = []
@@ -73,6 +78,9 @@ function addAssignment() {
 }
 
 function calculate() {
+
+	console.log("CALCULATE");
+
 	categories = [];
 	earned = 0; 
 	possible = 0;
@@ -97,7 +105,7 @@ function calculate() {
 			}
 		}
 		categories.push(cat);
-	}
+	} 
 
 	for(var i=0; i<categories.length; i++) {
 		earned += parseInt(categories[i]["earned"]);
@@ -181,7 +189,7 @@ numCell.innerHTML = "1";
 possibleCell.innerHTML = '<input type="text" id="possible">';
 earnedCell.innerHTML = '<input type="text" id="earned">';
 gradeCell.innerHTML = "";
-addCell.innerHTML = '<button id="add" onclick="addAssignment()">+</button>';
+addCell.innerHTML = '<input class="addButton" type="submit" value="+" id="add"	/>';
 
 var categoryChooser = document.getElementById("category");
 var possibleTextField = document.getElementById("possible");
@@ -244,3 +252,8 @@ earnedTextField.onchange = function() {
 	totalGradeCell.innerHTML = getGrade((earned + parseInt(earnedTextField.value)) / (possible + parseInt(possibleTextField.value)));
 	gradeCell.innerHTML = getGrade(parseInt(earnedTextField.value) / parseInt(possibleTextField.value));
 }
+
+
+/////// EVENT LISTENERS /////////
+
+document.getElementById("add").addEventListener("click", addAssignment);
